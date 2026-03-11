@@ -1,6 +1,7 @@
 """Графический интерфейс с валидацией, исправлением, заменой LPU_1, PLAT, MOP."""
 import threading
 import tkinter as tk
+import gui_handlers
 from tkinter import ttk, filedialog, messagebox, scrolledtext
 from pathlib import Path
 from core.core import (
@@ -36,6 +37,8 @@ class ValidatorApp:
         self._build_controls()
         self._build_tools()
         self._build_results()
+
+        gui_handlers.set_gui(self)
 
     # ══════════════════════════════════════════════
     #  ЗАГОЛОВОК
@@ -133,7 +136,7 @@ class ValidatorApp:
         self._btn_dir.pack(side=tk.LEFT, padx=(0, 5))
         self._btn_clear = tk.Button(
             btn_row, text="Clear", font=("Segoe UI", 10),
-            command=self._on_clear, padx=10,
+            command=gui_handlers.on_clear(), padx=10,
         )
         self._btn_clear.pack(side=tk.RIGHT)
         # Прогресс
@@ -845,7 +848,8 @@ class ValidatorApp:
         # Повторная валидация
         if self._schema and self._last_xml_paths:
             self._status_var.set("Re-validating after replacement...")
-            self._on_clear()
+            #self._on_clear()
+            gui_handlers.on_clear()
             self._run_validation(self._last_xml_paths)
 
     # ══════════════════════════════════════════════
@@ -855,7 +859,8 @@ class ValidatorApp:
         """Запускает процесс валидации XML-файлов в фоновом потоке."""
         if self._is_running:
             return
-        self._on_clear()
+        #self._on_clear()
+        gui_handlers.on_clear()
         self._is_running = True
         self._set_buttons(False)
         self._last_xml_paths = xml_paths
