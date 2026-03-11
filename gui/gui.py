@@ -1,7 +1,6 @@
 """Графический интерфейс с валидацией, исправлением, заменой LPU_1, PLAT, MOP."""
 import threading
 import tkinter as tk
-import gui_handlers
 from tkinter import ttk, filedialog, messagebox, scrolledtext
 from pathlib import Path
 from core.core import (
@@ -15,6 +14,10 @@ from core.core import (
     replace_lpu1_for_specific_usl,
 )
 from .NprNum_dialog import NPRNumDialog
+from .gui_handlers import (
+set_gui,
+on_clear as on_clear_handler,
+)
 
 
 class ValidatorApp:
@@ -38,7 +41,7 @@ class ValidatorApp:
         self._build_tools()
         self._build_results()
 
-        gui_handlers.set_gui(self)
+        set_gui(self)
 
     # ══════════════════════════════════════════════
     #  ЗАГОЛОВОК
@@ -136,7 +139,7 @@ class ValidatorApp:
         self._btn_dir.pack(side=tk.LEFT, padx=(0, 5))
         self._btn_clear = tk.Button(
             btn_row, text="Clear", font=("Segoe UI", 10),
-            command=gui_handlers.on_clear(), padx=10,
+            command=on_clear_handler(), padx=10,
         )
         self._btn_clear.pack(side=tk.RIGHT)
         # Прогресс
@@ -849,7 +852,7 @@ class ValidatorApp:
         if self._schema and self._last_xml_paths:
             self._status_var.set("Re-validating after replacement...")
             #self._on_clear()
-            gui_handlers.on_clear()
+            on_clear_handler()
             self._run_validation(self._last_xml_paths)
 
     # ══════════════════════════════════════════════
@@ -860,7 +863,7 @@ class ValidatorApp:
         if self._is_running:
             return
         #self._on_clear()
-        gui_handlers.on_clear()
+        on_clear_handler()
         self._is_running = True
         self._set_buttons(False)
         self._last_xml_paths = xml_paths
