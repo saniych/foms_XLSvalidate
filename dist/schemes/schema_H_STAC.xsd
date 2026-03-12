@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Table D.1 - Main medical care -->
+  <!-- File: <H>PiNiPpNp_YYMMN.xml -->
+  <!-- TFOMS PK, Prikaz 13.01.2026 N 2-P -->
+
+  <!-- ROOT -->
+
+  <xs:element name="ZL_LIST">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ZGLV"  type="ZGLVType"/>
+        <xs:element name="SCHET" type="SCHETType"/>
+        <xs:element name="ZAP"   type="ZAPType" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ZGLV -->
+
+  <xs:complexType name="ZGLVType">
+    <xs:sequence>
+      <xs:element name="VERSION">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="6.0"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="DATA"     type="xs:date"/>
+      <xs:element name="FILENAME" type="xs:string"/>
+      <xs:element name="SD_Z"     type="xs:integer"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- SCHET -->
+
+  <xs:complexType name="SCHETType">
+    <xs:sequence>
+      <xs:element name="CODE"      type="xs:string"/>
+      <xs:element name="CODE_MO"   type="xs:string"/>
+      <xs:element name="YEAR"      type="xs:integer"/>
+      <xs:element name="MONTH"     type="xs:integer"/>
+      <xs:element name="NSCHET"    type="xs:string"/>
+      <xs:element name="DSCHET"    type="xs:date"/>
+      <xs:element name="PLAT"      type="xs:string"/>
+      <xs:element name="SUMMAV"    type="xs:decimal"/>
+      <xs:element name="COMENTS"   type="xs:string"/>
+      <xs:element name="SUMMAP"    type="xs:decimal"/>
+      <xs:element name="SANK_MEK"  type="xs:decimal"/>
+      <xs:element name="SANK_MEE"  type="xs:decimal"/>
+      <xs:element name="SANK_EKMP" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ZAP -->
+
+  <xs:complexType name="ZAPType">
+    <xs:sequence>
+      <xs:element name="N_ZAP"   type="xs:integer"/>
+      <xs:element name="PR_NOV"  type="xs:integer"/>
+      <xs:element name="PACIENT" type="PACIENTType"/>
+      <xs:element name="Z_SL"    type="Z_SLType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- PACIENT -->
+
+  <xs:complexType name="PACIENTType">
+    <xs:sequence>
+      <xs:element name="ID_PAC"   type="xs:string"/>
+      <xs:element name="VPOLIS"   type="xs:integer"/>
+      <xs:element name="SPOLIS"   type="xs:string"  minOccurs="0"/>
+      <xs:element name="NPOLIS"   type="xs:string"  minOccurs="0"/>
+      <xs:element name="ENP"      type="xs:string"  minOccurs="0"/>
+      <xs:element name="ST_OKATO" type="xs:string"  minOccurs="0"/>
+      <xs:element name="SMO"      type="xs:string"  minOccurs="0"/>
+      <xs:element name="SMO_NAM"  type="xs:string"  minOccurs="0"/>
+      <xs:element name="INV"      type="xs:integer" minOccurs="0"/>
+      <xs:element name="MSE"      type="xs:integer" minOccurs="0"/>
+      <xs:element name="NOVOR"    type="xs:string"/>
+      <xs:element name="VNOV_D"   type="xs:integer" minOccurs="0"/>
+      <xs:element name="SOC"      type="xs:string"  minOccurs="0"/>
+      <xs:element name="MO_PR"    type="xs:string"/>
+      <xs:element name="VZ"       type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Z_SL -->
+
+  <xs:complexType name="Z_SLType">
+    <xs:sequence>
+      <xs:element name="IDCASE"   type="xs:string"/>
+      <xs:element name="USL_OK"   type="xs:integer"/>
+      <xs:element name="VIDPOM"   type="xs:integer"/>
+      <xs:element name="FOR_POM"  type="xs:integer"/>
+      <xs:element name="NPR_MO"   type="xs:string"  minOccurs="0"/>
+      <xs:element name="NPR_DATE" type="xs:date"    minOccurs="0"/>
+      <xs:element name="NPR_NUM"  type="xs:string"  minOccurs="0"/>
+      <xs:element name="LPU"      type="xs:string"/>
+      <xs:element name="DATE_Z_1" type="xs:date"/>
+      <xs:element name="DATE_Z_2" type="xs:date"/>
+      <xs:element name="KD_Z"     type="xs:integer" minOccurs="0"/>
+      <xs:element name="VNOV_M"   type="xs:integer" minOccurs="0"/>
+      <xs:element name="RSLT"     type="xs:integer"/>
+      <xs:element name="ISHOD"    type="xs:integer"/>
+      <xs:element name="OS_SLUCH" type="xs:integer" minOccurs="0"/>
+      <xs:element name="VB_P"     type="xs:integer" minOccurs="0"/>
+      <xs:element name="SL"       type="SLType"     maxOccurs="unbounded"/>
+      <xs:element name="IDSP"     type="xs:integer"/>
+      <xs:element name="SUMV"     type="xs:decimal"/>
+      <xs:element name="OPLATA"   type="xs:integer" minOccurs="0"/>
+      <xs:element name="SUMP"     type="xs:decimal" minOccurs="0"/>
+      <xs:element name="SANK"     type="SANKType"   minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="SANK_IT"  type="xs:decimal" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- SL -->
+
+  <xs:complexType name="SLType">
+    <xs:sequence>
+      <xs:element name="SL_ID"     type="xs:string"/>
+      <xs:element name="LPU_1"     type="xs:string"/>
+      <xs:element name="PODR"      type="xs:string"  minOccurs="0"/>
+      <xs:element name="PROFIL"    type="xs:integer" minOccurs="0"/>
+      <xs:element name="PROFIL_M"  type="xs:integer" minOccurs="0"/>
+      <xs:element name="PROFIL_K"  type="xs:integer" minOccurs="0"/>
+      <xs:element name="DET"       type="xs:integer"/>
+      <xs:element name="P_CEL"     type="xs:string"  minOccurs="0"/>
+      <xs:element name="MOP"       type="xs:integer"/>
+      <xs:element name="NHISTORY"  type="xs:string"/>
+      <xs:element name="P_PER"     type="xs:integer" minOccurs="0"/>
+      <xs:element name="DATE_1"    type="xs:date"/>
+      <xs:element name="DATE_2"    type="xs:date"/>
+      <xs:element name="KD"        type="xs:integer" minOccurs="0"/>
+      <xs:element name="WEI"       type="xs:decimal" minOccurs="0"/>
+      <xs:element name="DS0"       type="xs:string"  minOccurs="0"/>
+      <xs:element name="DS1"       type="xs:string"/>
+      <xs:element name="DS2"       type="xs:string"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="DS3"       type="xs:string"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="C_ZAB"     type="xs:integer" minOccurs="0"/>
+      <xs:element name="DN"        type="xs:integer" minOccurs="0"/>
+      <xs:element name="CODE_MES1" type="xs:string"  minOccurs="0"/>
+      <xs:element name="CODE_MES2" type="xs:string"  minOccurs="0"/>
+      <xs:element name="KSG_KPG"   type="KSG_KPGType"/>
+      <xs:element name="REAB"      type="xs:integer" minOccurs="0"/>
+      <xs:element name="PRVS"      type="xs:string"/>
+      <xs:element name="VERS_SPEC" type="xs:string"/>
+      <xs:element name="IDDOKT"    type="xs:string"/>
+      <xs:element name="ED_COL"    type="xs:decimal" minOccurs="0"/>
+      <xs:element name="TARIF"     type="xs:decimal" minOccurs="0"/>
+      <xs:element name="SUM_M"     type="xs:decimal"/>
+      <xs:element name="LEK_PR"    type="LEK_PRType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="USL"       type="USLType"    minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="COMENTSL"  type="xs:string"  minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- KSG_KPG -->
+
+  <xs:complexType name="KSG_KPGType">
+    <xs:sequence>
+      <xs:element name="N_KSG"   type="xs:string"/>
+      <xs:element name="VER_KSG" type="xs:string"/>
+      <xs:element name="KSG_PG"  type="xs:integer"/>
+      <xs:element name="N_KPG"   type="xs:string"  minOccurs="0"/>
+      <xs:element name="KOEF_Z"  type="xs:decimal"/>
+      <xs:element name="KOEF_UP" type="xs:decimal"/>
+      <xs:element name="BZTSZ"   type="xs:decimal"/>
+      <xs:element name="KOEF_D"  type="xs:decimal"/>
+      <xs:element name="KOEF_U"  type="xs:decimal"/>
+      <xs:element name="K_ZP"    type="xs:decimal" minOccurs="0"/>
+      <xs:element name="CRIT"    type="xs:string"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="SL_K"    type="xs:integer"/>
+      <xs:element name="IT_SL"   type="xs:decimal" minOccurs="0"/>
+      <xs:element name="SL_KOEF" type="SL_KOEFType" minOccurs="0"/>
+      <xs:element name="PR_PR"   type="xs:integer"/>
+      <xs:element name="KOEF_PR" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- SL_KOEF -->
+
+  <xs:complexType name="SL_KOEFType">
+    <xs:sequence>
+      <xs:element name="IDSL" type="xs:integer"/>
+      <xs:element name="Z_SL" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- LEK_PR -->
+
+  <xs:complexType name="LEK_PRType">
+    <xs:sequence>
+      <xs:element name="DATA_INJ" type="xs:date"/>
+      <xs:element name="CODE_SH"  type="xs:string"  minOccurs="0"/>
+      <xs:element name="REGNUM"   type="xs:string"/>
+      <xs:element name="COD_MARK" type="xs:string"  minOccurs="0"/>
+      <xs:element name="LEK_DOSE" type="LEK_DOSEType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- LEK_DOSE -->
+
+  <xs:complexType name="LEK_DOSEType">
+    <xs:sequence>
+      <xs:element name="ED_IZM"     type="xs:string"/>
+      <xs:element name="DOSE_INJ"   type="xs:decimal"/>
+      <xs:element name="METHOD_INJ" type="xs:integer" minOccurs="0"/>
+      <xs:element name="COL_INJ"    type="xs:decimal" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- USL -->
+
+  <xs:complexType name="USLType">
+    <xs:sequence>
+      <xs:element name="IDSERV"   type="xs:string"/>
+      <xs:element name="LPU"      type="xs:string"/>
+      <xs:element name="LPU_1"    type="xs:string"/>
+      <xs:element name="PODR"     type="xs:string"  minOccurs="0"/>
+      <xs:element name="PROFIL"   type="xs:integer" minOccurs="0"/>
+      <xs:element name="PROFIL_M" type="xs:integer" minOccurs="0"/>
+      <xs:element name="VID_VME"  type="xs:string"  minOccurs="0"/>
+      <xs:element name="DET"      type="xs:integer"/>
+      <xs:element name="DATE_IN"  type="xs:date"/>
+      <xs:element name="DATE_OUT" type="xs:date"/>
+      <xs:element name="DS"       type="xs:string"  minOccurs="0"/>
+      <xs:element name="CODE_USL" type="xs:string"/>
+      <xs:element name="KOL_USL"  type="xs:decimal" minOccurs="0"/>
+      <xs:element name="TARIF"    type="xs:decimal" minOccurs="0"/>
+      <xs:element name="SUMV_USL" type="xs:decimal"/>
+      <xs:element name="MED_DEV"  type="MED_DEVType"  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="MR_USL_N" type="MR_USL_NType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="NPL"      type="xs:integer" minOccurs="0"/>
+      <xs:element name="COMENTU"  type="xs:string"  minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- MED_DEV -->
+
+  <xs:complexType name="MED_DEVType">
+    <xs:sequence>
+      <xs:element name="DATE_MED"    type="xs:date"/>
+      <xs:element name="CODE_MEDDEV" type="xs:string"/>
+      <xs:element name="NUMBER_SER"  type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- MR_USL_N -->
+
+  <xs:complexType name="MR_USL_NType">
+    <xs:sequence>
+      <xs:element name="MR_N"    type="xs:integer"/>
+      <xs:element name="PRVS"    type="xs:string"/>
+      <xs:element name="CODE_MD" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- SANK -->
+
+  <xs:complexType name="SANKType">
+    <xs:sequence>
+      <xs:element name="S_CODE"   type="xs:string"/>
+      <xs:element name="S_SUM"    type="xs:decimal"/>
+      <xs:element name="S_TIP"    type="xs:integer"/>
+      <xs:element name="SL_ID"    type="xs:string"  minOccurs="0"/>
+      <xs:element name="S_OSN"    type="xs:string"/>
+      <xs:element name="DATE_ACT" type="xs:date"    minOccurs="0"/>
+      <xs:element name="NUM_ACT"  type="xs:string"  minOccurs="0"/>
+      <xs:element name="CODE_EXP" type="xs:string"  minOccurs="0"/>
+      <xs:element name="S_COM"    type="xs:string"  minOccurs="0"/>
+      <xs:element name="S_IST"    type="xs:string"  minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

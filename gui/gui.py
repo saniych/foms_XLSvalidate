@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, scrolledtext
 from pathlib import Path
 from core.core import (
-    load_xsd_schema,
+    # load_xsd_schema,
     get_schema_root_elements,
     validate_batch,
     collect_xml_files,
@@ -17,6 +17,9 @@ from .NprNum_dialog import NPRNumDialog
 from .gui_handlers import (
 set_gui,
 on_clear as on_clear_handler,
+on_select_xsd as on_selectxsd_handler,
+on_validate_files as on_validatefiles_handler,
+on_validate_dir as on_validatedir_handler,
 )
 
 
@@ -84,7 +87,8 @@ class ValidatorApp:
         ).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 10))
         self._btn_xsd = tk.Button(
             xsd_row, text="Select XSD", font=("Segoe UI", 10),
-            command=self._on_select_xsd, padx=10,
+            # command=self._on_select_xsd, padx=10,
+            command=on_selectxsd_handler, padx=10,
         )
         self._btn_xsd.pack(side=tk.RIGHT)
         # Информация о схеме
@@ -127,19 +131,19 @@ class ValidatorApp:
         btn_row.pack(fill=tk.X, pady=(3, 5))
         self._btn_files = tk.Button(
             btn_row, text="Validate File(s)", font=("Segoe UI", 10, "bold"),
-            command=self._on_validate_files,
+            command=on_validatefiles_handler,
             bg="#3498db", fg="white", padx=15, pady=4,
         )
         self._btn_files.pack(side=tk.LEFT, padx=(0, 5))
         self._btn_dir = tk.Button(
             btn_row, text="Validate Folder", font=("Segoe UI", 10, "bold"),
-            command=self._on_validate_dir,
+            command=on_validatedir_handler,
             bg="#16a085", fg="white", padx=15, pady=4,
         )
         self._btn_dir.pack(side=tk.LEFT, padx=(0, 5))
         self._btn_clear = tk.Button(
             btn_row, text="Clear", font=("Segoe UI", 10),
-            command=on_clear_handler(), padx=10,
+            command=on_clear_handler, padx=10,
         )
         self._btn_clear.pack(side=tk.RIGHT)
         # Прогресс
@@ -370,75 +374,75 @@ class ValidatorApp:
     # ══════════════════════════════════════════════
     #  ОБРАБОТЧИКИ: СХЕМА
     # ══════════════════════════════════════════════
-    def _on_select_xsd(self):
-        """Обрабатывает выбор XSD-файла через диалог."""
-        path = filedialog.askopenfilename(
-            title="Select XSD schema",
-            filetypes=[("XSD", "*.xsd"), ("All", "*.*")],
-        )
-        if not path:
-            return
-        xsd_path = Path(path)
-        try:
-            self._schema = load_xsd_schema(xsd_path)
-            self._xsd_path = xsd_path
-            self._xsd_var.set(xsd_path.name)
-            elements = get_schema_root_elements(xsd_path)
-            self._schema_elements = elements
-            self._schema_info_var.set(
-                f"Elements: {', '.join(elements) if elements else '(none)'}"
-            )
-            self._child_tag_combo["values"] = elements
-            if elements:
-                self._child_tag_var.set(elements[0])
-            self._status_var.set(f"Schema loaded: {xsd_path.name}")
-        except Exception as e:
-            messagebox.showerror("XSD Error", str(e))
-            self._schema = None
+    # def _on_select_xsd(self):
+    #     """Обрабатывает выбор XSD-файла через диалог."""
+    #     path = filedialog.askopenfilename(
+    #         title="Select XSD schema",
+    #         filetypes=[("XSD", "*.xsd"), ("All", "*.*")],
+    #     )
+    #     if not path:
+    #         return
+    #     xsd_path = Path(path)
+    #     try:
+    #         self._schema = load_xsd_schema(xsd_path)
+    #         self._xsd_path = xsd_path
+    #         self._xsd_var.set(xsd_path.name)
+    #         elements = get_schema_root_elements(xsd_path)
+    #         self._schema_elements = elements
+    #         self._schema_info_var.set(
+    #             f"Elements: {', '.join(elements) if elements else '(none)'}"
+    #         )
+    #         self._child_tag_combo["values"] = elements
+    #         if elements:
+    #             self._child_tag_var.set(elements[0])
+    #         self._status_var.set(f"Schema loaded: {xsd_path.name}")
+    #     except Exception as e:
+    #         messagebox.showerror("XSD Error", str(e))
+    #         self._schema = None
 
     # ══════════════════════════════════════════════
     #  ОБРАБОТЧИКИ: ВАЛИДАЦИЯ
     # ══════════════════════════════════════════════
-    def _on_validate_files(self):
-        """Запускает валидацию выбранных пользователем XML-файлов."""
-        if not self._check_schema():
-            return
-        paths = filedialog.askopenfilenames(
-            title="Select XML files",
-            filetypes=[("XML", "*.xml"), ("All", "*.*")],
-        )
-        if paths:
-            xml_paths = [Path(p) for p in paths]
-            self._last_xml_paths = xml_paths
-            self._run_validation(xml_paths)
+    # def _on_validate_files(self):
+    #     """Запускает валидацию выбранных пользователем XML-файлов."""
+    #     if not self._check_schema():
+    #         return
+    #     paths = filedialog.askopenfilenames(
+    #         title="Select XML files",
+    #         filetypes=[("XML", "*.xml"), ("All", "*.*")],
+    #     )
+    #     if paths:
+    #         xml_paths = [Path(p) for p in paths]
+    #         self._last_xml_paths = xml_paths
+    #         self._run_validation(xml_paths)
 
-    def _on_validate_dir(self):
-        """Запускает валидацию всех XML-файлов в выбранной папке."""
-        if not self._check_schema():
-            return
-        d = filedialog.askdirectory(title="Select folder with XML")
-        if not d:
-            return
-        try:
-            files = collect_xml_files(Path(d))
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
-            return
-        if not files:
-            messagebox.showinfo("Empty", "No XML files found.")
-            return
-        self._last_xml_paths = files
-        self._run_validation(files)
+    # def _on_validate_dir(self):
+    #     """Запускает валидацию всех XML-файлов в выбранной папке."""
+    #     if not self._check_schema():
+    #         return
+    #     d = filedialog.askdirectory(title="Select folder with XML")
+    #     if not d:
+    #         return
+    #     try:
+    #         files = collect_xml_files(Path(d))
+    #     except Exception as e:
+    #         messagebox.showerror("Error", str(e))
+    #         return
+    #     if not files:
+    #         messagebox.showinfo("Empty", "No XML files found.")
+    #         return
+    #     self._last_xml_paths = files
+    #     self._run_validation(files)
 
-    def _on_clear(self):
-        """Очищает таблицу результатов и панель деталей."""
-        self._tree.delete(*self._tree.get_children())
-        self._results.clear()
-        self._detail.configure(state=tk.NORMAL)
-        self._detail.delete("1.0", tk.END)
-        self._detail.configure(state=tk.DISABLED)
-        self._progress_var.set(0)
-        self._status_var.set("Cleared")
+    # def _on_clear(self):
+    #     """Очищает таблицу результатов и панель деталей."""
+    #     self._tree.delete(*self._tree.get_children())
+    #     self._results.clear()
+    #     self._detail.configure(state=tk.NORMAL)
+    #     self._detail.delete("1.0", tk.END)
+    #     self._detail.configure(state=tk.DISABLED)
+    #     self._progress_var.set(0)
+    #     self._status_var.set("Cleared")
 
     def _on_row_select(self, _event):
         """Обрабатывает выбор строки в таблице — показывает детали."""
