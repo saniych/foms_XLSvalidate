@@ -20,6 +20,8 @@ on_clear as on_clear_handler,
 on_select_xsd as on_selectxsd_handler,
 on_validate_files as on_validatefiles_handler,
 on_validate_dir as on_validatedir_handler,
+on_fix_missing as on_fixmissing_handler,
+on_replace_lpu1 as on_replacelpu1_handler,
 )
 
 
@@ -174,7 +176,7 @@ class ValidatorApp:
             fix_row,
             text="Fix Missing Elements",
             font=("Segoe UI", 10, "bold"),
-            command=self._on_fix_missing,
+            command=on_fixmissing_handler,
             bg="#e67e22", fg="white", padx=15, pady=4,
         )
         self._btn_fix.pack(side=tk.LEFT, padx=(0, 10))
@@ -202,7 +204,7 @@ class ValidatorApp:
             btn_attr="_btn_replace_lpu1",
             btn_text="Replace",
             btn_color="#8e44ad",
-            command=self._on_replace_lpu1,
+            command=on_replacelpu1_handler,
             hint="Replaces ALL <LPU_1> (in SL, USL, etc). Overwrites files.",
         )
         # Строка 3: PLAT
@@ -456,105 +458,106 @@ class ValidatorApp:
         if 0 <= idx < len(self._results):
             self._show_details(self._results[idx])
 
-    # ══════════════════════════════════════════════
-    #  ОБРАБОТЧИКИ: ИСПРАВЛЕНИЕ ОТСУТСТВУЮЩИХ ЭЛЕМЕНТОВ
-    # ══════════════════════════════════════════════
-    def _on_fix_missing(self):
-        """Запускает процесс исправления отсутствующих элементов в XML."""
-        if not self._check_schema():
-            return
-        if not self._check_files_loaded():
-            return
-        self._is_running = True
-        self._set_buttons(False)
-        self._status_var.set("Fixing...")
-
-        def worker():
-            try:
-                all_results = []
-                total = len(self._last_xml_paths)
-                for i, xml_path in enumerate(self._last_xml_paths, 1):
-                    result, fixes = fix_and_save_xml(
-                        xml_path, self._xsd_path, self._schema,
-                    )
-                    all_results.append(result)
-                    pct = (i / total) * 100
-                    self.root.after(0, self._progress_var.set, pct)
-                    self.root.after(
-                        0, self._status_var.set, f"Fixing {i}/{total}...",
-                    )
-                self.root.after(0, self._on_fix_done, all_results)
-            except Exception as e:
-                self.root.after(
-                    0, messagebox.showerror, "Fix Error", str(e),
-                )
-                self.root.after(0, self._set_buttons, True)
-                self._is_running = False
-
-        threading.Thread(target=worker, daemon=True).start()
-
-    def _on_fix_done(self, results):
-        """Обрабатывает завершение процесса исправления — обновляет UI."""
-        self._is_running = False
-        self._set_buttons(True)
-        for r in results:
-            idx = len(self._results)
-            self._results.append(r)
-            fixes_count = len(r.fixes_applied)
-            if r.is_valid:
-                tag = "fixed"
-                status = f"Fixed OK ({fixes_count} fixes)"
-            else:
-                tag = "invalid"
-                status = f"Fixed, {r.error_count} errors remain"
-            self._tree.insert(
-                "", tk.END, iid=str(idx),
-                values=(
-                    r.file_path.name, status,
-                    r.root_element or "-", "", r.error_count,
-                ),
-                tags=(tag,),
-            )
-        total_fixes = sum(len(r.fixes_applied) for r in results)
-        self._status_var.set(
-            f"Fix done! {len(results)} file(s), "
-            f"{total_fixes} total fixes applied.",
-        )
+    # # ══════════════════════════════════════════════
+    # #  ОБРАБОТЧИКИ: ИСПРАВЛЕНИЕ ОТСУТСТВУЮЩИХ ЭЛЕМЕНТОВ
+    # # ══════════════════════════════════════════════
+    # def _on_fix_missing(self):
+    #     """Запускает процесс исправления отсутствующих элементов в XML."""
+    #     if not self._check_schema():
+    #         return
+    #     if not self._check_files_loaded():
+    #         return
+    #     self._is_running = True
+    #     self._set_buttons(False)
+    #     self._status_var.set("Fixing...")
+    #
+    #     def worker():
+    #         try:
+    #             all_results = []
+    #             total = len(self._last_xml_paths)
+    #             for i, xml_path in enumerate(self._last_xml_paths, 1):
+    #                 result, fixes = fix_and_save_xml(
+    #                     xml_path, self._xsd_path, self._schema,
+    #                 )
+    #                 all_results.append(result)
+    #                 pct = (i / total) * 100
+    #                 self.root.after(0, self._progress_var.set, pct)
+    #                 self.root.after(
+    #                     0, self._status_var.set, f"Fixing {i}/{total}...",
+    #                 )
+    #             self.root.after(0, self._on_fix_done, all_results)
+    #         except Exception as e:
+    #             self.root.after(
+    #                 0, messagebox.showerror, "Fix Error", str(e),
+    #             )
+    #             self.root.after(0, self._set_buttons, True)
+    #             self._is_running = False
+    #
+    #     threading.Thread(target=worker, daemon=True).start()
+    #
+    # def _on_fix_done(self, results):
+    #     """Обрабатывает завершение процесса исправления — обновляет UI."""
+    #     self._is_running = False
+    #     self._set_buttons(True)
+    #     for r in results:
+    #         idx = len(self._results)
+    #         self._results.append(r)
+    #         fixes_count = len(r.fixes_applied)
+    #         if r.is_valid:
+    #             tag = "fixed"
+    #             status = f"Fixed OK ({fixes_count} fixes)"
+    #         else:
+    #             tag = "invalid"
+    #             status = f"Fixed, {r.error_count} errors remain"
+    #         self._tree.insert(
+    #             "", tk.END, iid=str(idx),
+    #             values=(
+    #                 r.file_path.name, status,
+    #                 r.root_element or "-", "", r.error_count,
+    #             ),
+    #             tags=(tag,),
+    #         )
+    #     total_fixes = sum(len(r.fixes_applied) for r in results)
+    #     self._status_var.set(
+    #         f"Fix done! {len(results)} file(s), "
+    #         f"{total_fixes} total fixes applied.",
+    #     )
 
     # ══════════════════════════════════════════════
     #  ОБРАБОТЧИКИ: ЗАМЕНА LPU_1
     # ══════════════════════════════════════════════
-    def _on_replace_lpu1(self):
-        """Запускает замену всех элементов LPU_1 на указанное значение."""
-        new_value = self._lpu1_var.get().strip()
-        if not new_value:
-            messagebox.showwarning("Empty", "Enter a value for LPU_1.")
-            return
-        if not self._check_files_loaded():
-            return
-        file_list = self._format_file_list(self._last_xml_paths)
-        if not messagebox.askyesno(
-            "Confirm LPU_1",
-            f"Replace ALL <LPU_1> with:\n{new_value}\n"
-            f"In files:\n{file_list}\nOverwrite?",
-        ):
-            return
-        self._run_replace_thread(
-            label="LPU_1",
-            worker_func=self._worker_replace_lpu1,
-            new_value=new_value,
-        )
 
-    def _worker_replace_lpu1(self, new_value):
-        """Функция-воркер для замены LPU_1 в фоне."""
-        total_count = 0
-        total_files = 0
-        for xml_path in self._last_xml_paths:
-            count, _ = replace_element_value(xml_path, "LPU_1", new_value)
-            total_count += count
-            if count > 0:
-                total_files += 1
-        return total_count, total_files
+    # def _on_replace_lpu1(self):
+    #     """Запускает замену всех элементов LPU_1 на указанное значение."""
+    #     new_value = self._lpu1_var.get().strip()
+    #     if not new_value:
+    #         messagebox.showwarning("Empty", "Enter a value for LPU_1.")
+    #         return
+    #     if not self._check_files_loaded():
+    #         return
+    #     file_list = self._format_file_list(self._last_xml_paths)
+    #     if not messagebox.askyesno(
+    #         "Confirm LPU_1",
+    #         f"Replace ALL <LPU_1> with:\n{new_value}\n"
+    #         f"In files:\n{file_list}\nOverwrite?",
+    #     ):
+    #         return
+    #     self._run_replace_thread(
+    #         label="LPU_1",
+    #         worker_func=self._worker_replace_lpu1,
+    #         new_value=new_value,
+    #     )
+    #
+    # def _worker_replace_lpu1(self, new_value):
+    #     """Функция-воркер для замены LPU_1 в фоне."""
+    #     total_count = 0
+    #     total_files = 0
+    #     for xml_path in self._last_xml_paths:
+    #         count, _ = replace_element_value(xml_path, "LPU_1", new_value)
+    #         total_count += count
+    #         if count > 0:
+    #             total_files += 1
+    #     return total_count, total_files
 
     # ══════════════════════════════════════════════
     #  ОБРАБОТЧИКИ: ЗАМЕНА / ВСТАВКА PLAT
